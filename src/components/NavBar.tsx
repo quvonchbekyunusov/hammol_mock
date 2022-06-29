@@ -10,9 +10,18 @@ interface NavBarProps {
   setName: (name: string) => void;
   category: string;
   setCategory: (category: string) => void;
+  limit: string;
+  setLimit: (limit: string) => void;
 }
 
-function NavBar({ name, setName, category, setCategory }: NavBarProps) {
+function NavBar({
+  name,
+  setName,
+  category,
+  setCategory,
+  limit,
+  setLimit,
+}: NavBarProps) {
   const dispatch = useAppDispatch();
   const { categories } = useAppSelector((state) => state.product);
   useEffect(() => {
@@ -24,7 +33,7 @@ function NavBar({ name, setName, category, setCategory }: NavBarProps) {
         dispatch(setCategories(data));
       }
     })();
-  }, []);
+  }, [dispatch]);
   return (
     <div className={styles.container}>
       <p>PRODUCTS</p>
@@ -41,6 +50,13 @@ function NavBar({ name, setName, category, setCategory }: NavBarProps) {
             </option>
           ))}
       </select>
+      <input
+        type="text"
+        placeholder="Limit"
+        value={limit}
+        onChange={(e) => setLimit(e.target.value)}
+        className={styles.limitInput}
+      />
       <div className={styles.searchContainer}>
         <input value={name} onChange={(e) => setName(e.target.value)} />
         <button>

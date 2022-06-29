@@ -17,11 +17,16 @@ function Home() {
   const { products } = useAppSelector((state) => state.product);
   const paginationCount = useMemo(() => {
     if (products) {
-      return products?.count / Number(limit);
+      if (Number(limit) === 0) {
+        return 1;
+      } else {
+        const count = Math.ceil(products.count / Number(limit));
+        return count;
+      }
     } else {
-      return 0;
+      return 1;
     }
-  }, [products]);
+  }, [products, limit]);
   const fetchItems = async (url: string) => {
     const response = await request({ url: url });
     if (response?.data) {
@@ -29,16 +34,23 @@ function Home() {
     }
     return response?.data;
   };
-  console.log(products);
+  console.log(paginationCount);
   useEffect(() => {
-    console.log(
-      `/products?category=${category}&name=${name}&offset=${offset}&limit=${limit}`,
-    );
     fetchItems(
       `/product?category=${category}&name=${name}&offset=${offset}&limit=${limit}`,
     );
+    if (page > paginationCount) {
+      setPage(1);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, name, offset, limit]);
+  }, [category, offset, limit]);
+  useEffect(() => {
+    fetchItems(`/product?category=${category}&name=${name}`);
+    if (page > paginationCount) {
+      setPage(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [name]);
   return (
     <div className={styles.container}>
       <NavBar
@@ -46,6 +58,8 @@ function Home() {
         setName={setName}
         category={category}
         setCategory={setCategory}
+        limit={limit}
+        setLimit={setLimit}
       />
       <div className={styles.content}>
         {products?.products?.map((product: IProduct) => (

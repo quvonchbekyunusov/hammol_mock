@@ -17,18 +17,23 @@ function Card({
       onClick={() => navigation(`/product:${product.id}`)}
       className={styles.container}
     >
-      <img style={{ width: "100%" }} alt="image45" src={product.thumbnail} />
+      <img alt="image45" src={product.thumbnail} />
       <h3>{product.title} </h3>
-      <b>{product.id}</b>
       <p>{product.description}</p>
       <h4>{product.brand}</h4>
-      <h5 onClick={() => setCategory(product.category)}>#{product.category}</h5>
+      <h5
+        onClick={(e) => {
+          e.stopPropagation();
+          setCategory(product.category);
+        }}
+      >
+        #{product.category}
+      </h5>
       <div className={styles.rating}>
         <b> $ {product.price}</b>
         <Rating
           name="half-rating-read"
           defaultValue={product.rating}
-          precision={0.1}
           readOnly
         />
       </div>
